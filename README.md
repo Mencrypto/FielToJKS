@@ -50,7 +50,7 @@ FIELConvertions.createPKCS12withCertAndKey(key, certFile, password, passwordFina
 ## Descarga:
 
 Requiere JDK 11.
-[Link Pendiente](https://mencrypto.com/).
+[Link Pendiente](https://github.com/Mencrypto/FielToJKS/releases).
 
 ## Para dudas visita mi web:
 
