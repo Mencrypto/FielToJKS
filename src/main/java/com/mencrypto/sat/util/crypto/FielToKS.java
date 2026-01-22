@@ -1,4 +1,4 @@
-package mx.mencrypto.sat.util.crypto;
+package com.mencrypto.sat.util.crypto;
 
 import java.io.Console;
 import java.io.File;

@@ -1,4 +1,4 @@
-package mx.mencrypto.sat.util.crypto;
+package com.mencrypto.sat.util.crypto;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,10 +38,10 @@ import org.bouncycastle.pkcs.PKCSException;
 import org.bouncycastle.util.io.pem.PemObject;
 
 /**
- * Clase de utilería para tratar certificados  y llaves de la Firma Electrónica FIEL
- * emitida por el Sistema de Administración Tributaría SAT
+ * Clase de utileria para tratar certificados  y llaves de la Firma Electronica FIEL
+ * emitida por el Sistema de AdministraciÃ³n TributarÃ­a SAT
  * Permite convertir a almacenes de llave pfx o p12 y  Java Key Store JKS
- * Lo que puede ayudar en la automatización o uso en otros proyectos
+ * Lo que puede ayudar en la automatizaciÃ³n o uso en otros proyectos
  * 
  * @author Mencryto
  * @version 1.0
@@ -49,22 +49,22 @@ import org.bouncycastle.util.io.pem.PemObject;
 public class FIELConvertions {
 	
 	/**
-	 * Convierte una llave en formato pkcs8 con contraseña a PEM sin contraseña
+	 * Convierte una llave en formato pkcs8 con contraseÃ±a a PEM sin contraseÃ±a
 	 * y la escribe en la misma ruta en que se encuentre el archivo original
-	 * Sirve para la Firma Electrónica FIEL del Sistema de Administración Tributaria SAT de México
-	 * @param keypkcs8 File de la ubicación de la llave o .key
-	 * @param password Es la contraseña para la llave FIEL
-	 * @return String con la ruta en la que se escribió el archivo .pem
+	 * Sirve para la Firma ElectrÃ³nica FIEL del Sistema de AdministraciÃ³n Tributaria SAT de MÃ©xico
+	 * @param keypkcs8 File de la ubicaciÃ³n de la llave o .key
+	 * @param password Es la contraseÃ±a para la llave FIEL
+	 * @return String con la ruta en la que se escribiÃ³ el archivo .pem
 	 */
 	static String convertKeyDERToPEM(File keypkcs8, String password) {
-		// Ruta donde se guardará el archivo PEM sin contraseña con extensión .pem
+		// Ruta donde se guardarÃ¡ el archivo PEM sin contraseÃ±a con extensiÃ³n .pem
 		String outputhPath = keypkcs8.getAbsolutePath().substring(0, keypkcs8.getAbsolutePath().lastIndexOf("."))+ ".pem";
 
 		PrivateKey privatKey = loadPrivateKey(keypkcs8, password);
-		// Cambiar de llave RSA a PEM sin contraseña
+		// Cambiar de llave RSA a PEM sin contraseÃ±a
 		PemObject pemObject = new PemObject("PRIVATE KEY", privatKey.getEncoded());
 		File outputPemFile = new File(outputhPath);
-		// Escribir PEM SIN contraseña
+		// Escribir PEM SIN contraseÃ±a
 		try (JcaPEMWriter pemWriter = new JcaPEMWriter(new FileWriter(outputPemFile))) {
 			pemWriter.writeObject(pemObject);
 			System.out.println("Llave PEM generada correctamente en: " + outputhPath);
@@ -76,14 +76,14 @@ public class FIELConvertions {
 	}
 	
 	/**
-	 * Convierte un certificado con llave pública en formato der a formato pem que incluye la llave
-	 * pública y el certificado y la escribe en la misma ruta en que se encuentre el archivo original
-	 * Sirve para la Firma Electrónica FIEL del Sistema de Administración Tributaria SAT de México
-	 * @param certx509 File de la ubicación del certificado
-	 * @return String con la ruta en la que se escribió el archivo .pem
+	 * Convierte un certificado con llave pÃºblica en formato der a formato pem que incluye la llave
+	 * pÃºblica y el certificado y la escribe en la misma ruta en que se encuentre el archivo original
+	 * Sirve para la Firma ElectrÃ³nica FIEL del Sistema de AdministraciÃ³n Tributaria SAT de MÃ©xico
+	 * @param certx509 File de la ubicaciÃ³n del certificado
+	 * @return String con la ruta en la que se escribiÃ³ el archivo .pem
 	 */
 	static String convertcerx509ToPEM(File certx509) {
-		// Permite usar algoritmos de cifrado adicionales que no están en la implementación base de Java
+		// Permite usar algoritmos de cifrado adicionales que no estÃ¡n en la implementaciÃ³n base de Java
 		Security.addProvider(new BouncyCastleProvider());
 
 		String outputhPath = certx509.getAbsolutePath().substring(0, certx509.getAbsolutePath().lastIndexOf("."))+ "_CER.pem";
@@ -105,7 +105,7 @@ public class FIELConvertions {
 		SubjectPublicKeyInfo publicKey = certHolder.getSubjectPublicKeyInfo();
 
 		File outputPemFile = new File(outputhPath);
-		// Escribe la llave pública y el certificado en formato PEM que de otra forma certHolder solo escribe el certificado
+		// Escribe la llave pÃºblica y el certificado en formato PEM que de otra forma certHolder solo escribe el certificado
 		try (JcaPEMWriter pemWriter = new JcaPEMWriter(new FileWriter(outputPemFile))) {
 			pemWriter.writeObject(publicKey);
 			pemWriter.writeObject(certHolder);
@@ -118,16 +118,16 @@ public class FIELConvertions {
 	}
 	
 	/**
-	 * Convierte una llave en formato pkcs8 con contraseña y su certificado con llave pública en formato der 
-	 * a un archivo p12 o pfx con la misma contraseña y la escribe en la misma ruta en que se encuentre 
+	 * Convierte una llave en formato pkcs8 con contraseÃ±a y su certificado con llave pÃºblica en formato der 
+	 * a un archivo p12 o pfx con la misma contraseÃ±a y la escribe en la misma ruta en que se encuentre 
 	 * el archivo original
-	 * Sirve para la Firma Electrónica FIEL del Sistema de Administración Tributaria SAT de México
-	 * @param keypkcs8 File de la ubicación de la llave o .key
-	 * @param certx509 File de la ubicación del certificado
-	 * @param oldPassword Es la contraseña para la llave FIEL
-	 * @param newPassword Es la contraseña para el nuevo archovo p12 y su llave
+	 * Sirve para la Firma ElectrÃ³nica FIEL del Sistema de AdministraciÃ³n Tributaria SAT de MÃ©xico
+	 * @param keypkcs8 File de la ubicaciÃ³n de la llave o .key
+	 * @param certx509 File de la ubicaciÃ³n del certificado
+	 * @param oldPassword Es la contraseÃ±a para la llave FIEL
+	 * @param newPassword Es la contraseÃ±a para el nuevo archovo p12 y su llave
 	 * @param jks Indica con true que debe crearse un JKS en lugar de p12 o pfx
-	 * @return String con la ruta en la que se escribió el archivo p12
+	 * @return String con la ruta en la que se escribiÃ³ el archivo p12
 	 */
 	private static String createKSWithCertAndKey(File keypkcs8, File certx509, String oldPassword, String newPassword, Boolean jks) {
 		String extension = (!jks) ? ".p12" : ".jks"; 
@@ -137,7 +137,7 @@ public class FIELConvertions {
 		PrivateKey privateKey = loadPrivateKey(keypkcs8, oldPassword);
 		// Guardar el archivo PKCS12
 		try (FileOutputStream fos = new FileOutputStream(outputhPath)) {
-			// Inicializar el almacén de claves (vacío)
+			// Inicializar el almacÃ©n de claves (vacÃ­o)
 			KeyStore keyStore = (!jks) ?  KeyStore.getInstance("PKCS12", "BC") : KeyStore.getInstance("JKS");
 			keyStore.load(null, null);
 			String password = (newPassword == null) ? oldPassword : newPassword;
@@ -147,7 +147,7 @@ public class FIELConvertions {
 			System.out.println("Keystore generado correctamente en: "+ outputhPath);
 			return outputhPath;
 		} catch (KeyStoreException e) {
-			System.out.println("Error no coincide la contraseña con la llave\n");
+			System.out.println("Error no coincide la contraseÃ±a con la llave\n");
 			e.printStackTrace();
 		} catch (NoSuchProviderException e) {
 			e.printStackTrace();
@@ -164,71 +164,71 @@ public class FIELConvertions {
 	}
 	
 	/**
-	 * Convierte una llave en formato pkcs8 con contraseña y su certificado con llave pública en formato der 
-	 * a un archivo p12 o pfx con la misma contraseña y la escribe en la misma ruta en que se encuentre 
+	 * Convierte una llave en formato pkcs8 con contraseÃ±a y su certificado con llave pÃºblica en formato der 
+	 * a un archivo p12 o pfx con la misma contraseÃ±a y la escribe en la misma ruta en que se encuentre 
 	 * el archivo original
-	 * Sirve para la Firma Electrónica FIEL del Sistema de Administración Tributaria SAT de México
-	 * @param keypkcs8 File de la ubicación de la llave o .key
-	 * @param certx509 File de la ubicación del certificado
-	 * @param oldPassword Es la contraseña para la llave FIEL
-	 * @param newPassword Es la contraseña para el nuevo archovo p12 y su llave
-	 * @return String con la ruta en la que se escribió el archivo p12
+	 * Sirve para la Firma ElectrÃ³nica FIEL del Sistema de AdministraciÃ³n Tributaria SAT de MÃ©xico
+	 * @param keypkcs8 File de la ubicaciÃ³n de la llave o .key
+	 * @param certx509 File de la ubicaciÃ³n del certificado
+	 * @param oldPassword Es la contraseÃ±a para la llave FIEL
+	 * @param newPassword Es la contraseÃ±a para el nuevo archovo p12 y su llave
+	 * @return String con la ruta en la que se escribiÃ³ el archivo p12
 	 */
 	static String createPKCS12withCertAndKey(File keypkcs8, File certx509, String oldPassword, String newPassword) {
 		return createKSWithCertAndKey(keypkcs8, certx509, oldPassword, newPassword, false);
 	}
 	
 	/**
-	 * Convierte una llave en formato pkcs8 con contraseña y su certificado con llave pública en formato der 
-	 * a un archivo p12 o pfx con la misma contraseña y la escribe en la misma ruta en que se encuentre 
+	 * Convierte una llave en formato pkcs8 con contraseÃ±a y su certificado con llave pÃºblica en formato der 
+	 * a un archivo p12 o pfx con la misma contraseÃ±a y la escribe en la misma ruta en que se encuentre 
 	 * el archivo original
-	 * Sirve para la Firma Electrónica FIEL del Sistema de Administración Tributaria SAT de México
-	 * @param keypkcs8 File de la ubicación de la llave o .key
-	 * @param certx509 File de la ubicación del certificado
-	 * @param password Es la contraseña para la llave FIEL
-	 * @return String con la ruta en la que se escribió el archivo p12
+	 * Sirve para la Firma ElectrÃ³nica FIEL del Sistema de AdministraciÃ³n Tributaria SAT de MÃ©xico
+	 * @param keypkcs8 File de la ubicaciÃ³n de la llave o .key
+	 * @param certx509 File de la ubicaciÃ³n del certificado
+	 * @param password Es la contraseÃ±a para la llave FIEL
+	 * @return String con la ruta en la que se escribiÃ³ el archivo p12
 	 */
 	static String createPKCS12withCertAndKey(File keypkcs8, File certx509, String password) {
 		return createKSWithCertAndKey(keypkcs8, certx509, password, null, false);
 	}
 	
 	/**
-	 * Convierte una llave en formato pkcs8 con contraseña y su certificado con llave pública en formato der 
-	 * a un archivo JKS (Java Key Store) con la misma contraseña y la escribe en la misma ruta en que se encuentre 
+	 * Convierte una llave en formato pkcs8 con contraseÃ±a y su certificado con llave pÃºblica en formato der 
+	 * a un archivo JKS (Java Key Store) con la misma contraseÃ±a y la escribe en la misma ruta en que se encuentre 
 	 * el archivo original
-	 * Sirve para la Firma Electrónica FIEL del Sistema de Administración Tributaria SAT de México
-	 * @param keypkcs8 File de la ubicación de la llave o .key
-	 * @param certx509 File de la ubicación del certificado
-	 * @param password Es la contraseña para la llave FIEL
-	 * @return String con la ruta en la que se escribió el archivo p12
+	 * Sirve para la Firma ElectrÃ³nica FIEL del Sistema de AdministraciÃ³n Tributaria SAT de MÃ©xico
+	 * @param keypkcs8 File de la ubicaciÃ³n de la llave o .key
+	 * @param certx509 File de la ubicaciÃ³n del certificado
+	 * @param password Es la contraseÃ±a para la llave FIEL
+	 * @return String con la ruta en la que se escribiÃ³ el archivo p12
 	 */
 	static String createJKSwithCertAndKey(File keypkcs8, File certx509, String password) {
 		return createKSWithCertAndKey(keypkcs8, certx509, password, null, true);
 	}
 	
 	/**
-	 * Convierte una llave en formato pkcs8 con contraseña y su certificado con llave pública en formato der 
-	 * a un archivo JKS (Java Key Store) con la misma contraseña y la escribe en la misma ruta en que se encuentre 
+	 * Convierte una llave en formato pkcs8 con contraseÃ±a y su certificado con llave pÃºblica en formato der 
+	 * a un archivo JKS (Java Key Store) con la misma contraseÃ±a y la escribe en la misma ruta en que se encuentre 
 	 * el archivo original
-	 * Sirve para la Firma Electrónica FIEL del Sistema de Administración Tributaria SAT de México
-	 * @param keypkcs8 File de la ubicación de la llave o .key
-	 * @param certx509 File de la ubicación del certificado
-	 * @param oldPassword Es la contraseña para la llave FIEL
-	 * @param newPassword Es la contraseña para el nuevo archovo p12 y su llave
-	 * @return String con la ruta en la que se escribió el archivo p12
+	 * Sirve para la Firma ElectrÃ³nica FIEL del Sistema de AdministraciÃ³n Tributaria SAT de MÃ©xico
+	 * @param keypkcs8 File de la ubicaciÃ³n de la llave o .key
+	 * @param certx509 File de la ubicaciÃ³n del certificado
+	 * @param oldPassword Es la contraseÃ±a para la llave FIEL
+	 * @param newPassword Es la contraseÃ±a para el nuevo archovo p12 y su llave
+	 * @return String con la ruta en la que se escribiÃ³ el archivo p12
 	 */
 	static String createJKSwithCertAndKey(File keypkcs8, File certx509, String oldPassword, String newPassword) {
 		return createKSWithCertAndKey(keypkcs8, certx509, oldPassword, newPassword, true);
 	}
 	
 	/**
-	 * Genera un objeto PrivateKey a partir de una llave en formato PKCS8 con contraseña
-	 * @param keypkcs8 File de la ubicación de la llave o .key
-	 * @param password Es la contraseña para la llave FIEL
-	 * @return PrivateKey representación del objeto llave para Java
+	 * Genera un objeto PrivateKey a partir de una llave en formato PKCS8 con contraseÃ±a
+	 * @param keypkcs8 File de la ubicaciÃ³n de la llave o .key
+	 * @param password Es la contraseÃ±a para la llave FIEL
+	 * @return PrivateKey representaciÃ³n del objeto llave para Java
 	 */
 	private static PrivateKey loadPrivateKey(File keypkcs8, String password) {
-		// Permite usar algoritmos de cifrado adicionales que no están en la implementación base de Java
+		// Permite usar algoritmos de cifrado adicionales que no estÃ¡n en la implementaciÃ³n base de Java
 		Security.addProvider(new BouncyCastleProvider());
 		// 1. Leer DER y crear objeto PKCS8EncryptedPrivateKeyInfo que lo contiene
 		byte[] derBytes = null;
@@ -251,7 +251,7 @@ public class FIELConvertions {
 		} catch (OperatorCreationException e) {
 			e.printStackTrace();
 		} catch (PKCSException e) {
-			System.out.println("Error no coincide la contraseña con la llave\n");
+			System.out.println("Error no coincide la contraseÃ±a con la llave\n");
 			e.printStackTrace();
 		} catch (PEMException e) {
 			e.printStackTrace();
@@ -261,9 +261,9 @@ public class FIELConvertions {
     
 	/**
 	 * Genera un objeto X509Certificate a partir de una certificado en formato DER 
-	 * con llave pública
-	 * @param certFile File de la ubicación del certificado
-	 * @return X509Certificate representación del objeto certificado para Java
+	 * con llave pÃºblica
+	 * @param certFile File de la ubicaciÃ³n del certificado
+	 * @return X509Certificate representaciÃ³n del objeto certificado para Java
 	 */
     private static X509Certificate loadCertificate(File certFile) {
         FileInputStream fis = null;
@@ -288,8 +288,8 @@ public class FIELConvertions {
     
 	/**
 	 * Obtiene el identificado RFC (Registro Federal del Contribuyente) de un  
-	 * certificado emitido por el SAT (Sistema de Administración Tributaria)
-	 * @param X509Certificate representación del objeto certificado para Java
+	 * certificado emitido por el SAT (Sistema de AdministraciÃ³n Tributaria)
+	 * @param X509Certificate representaciÃ³n del objeto certificado para Java
 	 * @return String RFC identificador
 	 */
     private static String getRFCFromCert(X509Certificate cert) {
